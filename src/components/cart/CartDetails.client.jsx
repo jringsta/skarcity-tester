@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {useRef, useEffect, useState} from 'react';
 import {useScroll} from 'react-use';
 import {
   Link,
@@ -11,7 +11,37 @@ import {
 import {Button, Text, CartLineItem, CartEmpty} from '~/components';
 
 export function CartDetails({layout, onClose}) {
+  const [productLimit, setProductLimit] = useState({});
+  const [limitReached, setLimitReached] = useState(false);
+  const [breakingLimitRules, setBreakingLimitRules] = useState(false);
+
   const {lines} = useCart();
+
+  useEffect(() => {
+    if (lines.length > 0) {
+      const productQuantity = {};
+      lines.map((product) => {
+        productQuantity[product.merchandise.image.id]
+          ? (productQuantity[product.merchandise.image.id] =
+              productQuantity[product.merchandise.image.id] + product.quantity)
+          : (productQuantity[product.merchandise.image.id] = product.quantity);
+      });
+      setProductLimit(productQuantity);
+    } else {
+      setProductLimit({});
+    }
+  }, [lines]);
+
+  useEffect(() => {
+    Object.values(productLimit).forEach((num) => {
+      if (num > 3) {
+        setBreakingLimitRules(true);
+        return;
+      }
+      setBreakingLimitRules(false);
+    });
+  }, [productLimit]);
+
   const scrollRef = useRef(null);
   const {y} = useScroll(scrollRef);
 
@@ -35,32 +65,32 @@ export function CartDetails({layout, onClose}) {
   };
 
   return (
-    <form
-      className={container[layout]}
-      onSubmit={(evt) => evt.preventDefault()}
-    >
+    <form className={container[layout]}>
       <section
         ref={scrollRef}
         aria-labelledby="cart-contents"
-        className={`${content[layout]} ${y > 0 ? 'border-t' : ''}`}
+        className={`text-color,${content[layout]} ${y > 0 ? 'border-t' : ''}`}
       >
         <ul className="grid gap-6 md:gap-10">
           {lines.map((line) => {
             return (
               <CartLineProvider key={line.id} line={line}>
-                <CartLineItem />
+                <CartLineItem
+                  productLimit={productLimit}
+                  limitReached={limitReached}
+                  setLimitReached={setLimitReached}
+                />
               </CartLineProvider>
             );
           })}
         </ul>
       </section>
-      <section aria-labelledby="summary-heading" className={summary[layout]}>
-        <h2 id="summary-heading" className="sr-only">
-          Order summary
-        </h2>
-        <OrderSummary />
-        <CartCheckoutActions />
-      </section>
+      {!breakingLimitRules && (
+        <div className={`${summary[layout]}, cart-bottom`}>
+          <OrderSummary />
+          <CartCheckoutActions />
+        </div>
+      )}
     </form>
   );
 }
@@ -69,10 +99,10 @@ function CartCheckoutActions() {
   const {checkoutUrl} = useCart();
   return (
     <>
-      <div className="grid gap-4">
+      <div className="grid gap-4 text-color">
         {checkoutUrl ? (
           <Link to={checkoutUrl} prefetch={false} target="_self">
-            <Button as="span" width="full">
+            <Button as="span" width="full" className="cart-button">
               Continue to Checkout
             </Button>
           </Link>
@@ -88,7 +118,7 @@ function OrderSummary() {
   return (
     <>
       <dl className="grid">
-        <div className="flex items-center justify-between font-medium">
+        <div className="flex items-center justify-between font-medium text-color">
           <Text as="dt">Subtotal</Text>
           <Text as="dd">
             {cost?.subtotalAmount?.amount ? (

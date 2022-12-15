@@ -1,7 +1,7 @@
 import {Seo} from '@shopify/hydrogen';
 import {Suspense} from 'react';
-import {PageHeader, Section, CartDetails} from '~/components';
 import {Layout} from '~/components/index.server';
+import {SupportBody} from '../components/index';
 
 export default function Cart() {
   return (
@@ -10,16 +10,11 @@ export default function Cart() {
         <Seo
           type="page"
           data={{
-            title: 'Cart',
+            title: 'Support',
           }}
         />
       </Suspense>
-      <div>
-        <PageHeader heading="Your Cart" />
-      </div>
-      <Section padding="x">
-        <CartDetails layout="page" />
-      </Section>
+      <SupportBody />
     </Layout>
   );
 }

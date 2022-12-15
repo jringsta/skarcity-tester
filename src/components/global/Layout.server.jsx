@@ -6,7 +6,6 @@ import {Footer} from '~/components/index.server';
 import {parseMenu} from '~/lib/utils';
 
 const HEADER_MENU_HANDLE = 'main-menu';
-const FOOTER_MENU_HANDLE = 'footer';
 
 const SHOP_NAME_FALLBACK = 'Hydrogen';
 
@@ -16,34 +15,25 @@ const SHOP_NAME_FALLBACK = 'Hydrogen';
 export function Layout({children}) {
   return (
     <>
-      <div className="flex flex-col min-h-screen">
-        <div className="">
-          <a href="#mainContent" className="sr-only">
-            Skip to content
-          </a>
-        </div>
-        <Suspense fallback={<Header title={SHOP_NAME_FALLBACK} />}>
+      <div
+        className="main-container"
+        fallback={<div className="header-container" />}
+      >
+        <Suspense>
           <HeaderWithMenu />
         </Suspense>
         <main role="main" id="mainContent" className="flex-grow">
           {children}
         </main>
+        <Footer />
       </div>
-      <Suspense fallback={<Footer />}>
-        <FooterWithMenu />
-      </Suspense>
     </>
   );
 }
 
 function HeaderWithMenu() {
-  const {shopName, headerMenu} = useLayoutQuery();
-  return <Header title={shopName} menu={headerMenu} />;
-}
-
-function FooterWithMenu() {
-  const {footerMenu} = useLayoutQuery();
-  return <Footer menu={footerMenu} />;
+  const {headerMenu} = useLayoutQuery();
+  return <Header menu={headerMenu} />;
 }
 
 function useLayoutQuery() {
@@ -56,7 +46,6 @@ function useLayoutQuery() {
     variables: {
       language: languageCode,
       headerMenuHandle: HEADER_MENU_HANDLE,
-      footerMenuHandle: FOOTER_MENU_HANDLE,
     },
     cache: CacheLong(),
     preload: '*',
@@ -78,11 +67,7 @@ function useLayoutQuery() {
     ? parseMenu(data.headerMenu, customPrefixes)
     : undefined;
 
-  const footerMenu = data?.footerMenu
-    ? parseMenu(data.footerMenu, customPrefixes)
-    : undefined;
-
-  return {footerMenu, headerMenu, shopName};
+  return {headerMenu, shopName};
 }
 
 const SHOP_QUERY = gql`
@@ -94,24 +79,12 @@ const SHOP_QUERY = gql`
     type
     url
   }
-  query layoutMenus(
-    $language: LanguageCode
-    $headerMenuHandle: String!
-    $footerMenuHandle: String!
-  ) @inContext(language: $language) {
+  query layoutMenus($language: LanguageCode, $headerMenuHandle: String!)
+  @inContext(language: $language) {
     shop {
       name
     }
     headerMenu: menu(handle: $headerMenuHandle) {
-      id
-      items {
-        ...MenuItem
-        items {
-          ...MenuItem
-        }
-      }
-    }
-    footerMenu: menu(handle: $footerMenuHandle) {
       id
       items {
         ...MenuItem

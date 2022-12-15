@@ -1,25 +1,22 @@
 import {Seo} from '@shopify/hydrogen';
 import {Suspense} from 'react';
-import {PageHeader, Section, CartDetails} from '~/components';
+
 import {Layout} from '~/components/index.server';
 
-export default function Cart() {
+import {AboutBody} from '~/components';
+
+export default function About() {
   return (
     <Layout>
       <Suspense>
         <Seo
           type="page"
           data={{
-            title: 'Cart',
+            title: 'About',
           }}
         />
       </Suspense>
-      <div>
-        <PageHeader heading="Your Cart" />
-      </div>
-      <Section padding="x">
-        <CartDetails layout="page" />
-      </Section>
+      <AboutBody heading={`About`}></AboutBody>
     </Layout>
   );
 }

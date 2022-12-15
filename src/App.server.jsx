@@ -8,56 +8,34 @@ import {
   Router,
   ShopifyAnalytics,
   ShopifyProvider,
+  LocalizationProvider,
   CartProvider,
-  useSession,
-  useServerAnalytics,
-  Seo,
 } from '@shopify/hydrogen';
-import {HeaderFallback, EventsListener} from '~/components';
-import {NotFound} from '~/components/index.server';
 
-function App({request}) {
+import {DefaultSeo, NotFound} from '~/components/index.server';
+
+function App({routes, request}) {
   const pathname = new URL(request.normalizedUrl).pathname;
   const localeMatch = /^\/([a-z]{2})(\/|$)/i.exec(pathname);
   const countryCode = localeMatch ? localeMatch[1] : undefined;
 
-  const isHome = pathname === `/${countryCode ? countryCode + '/' : ''}`;
-
-  const {customerAccessToken} = useSession();
-
-  useServerAnalytics({
-    shopify: {
-      isLoggedIn: !!customerAccessToken,
-    },
-  });
-
   return (
-    <Suspense fallback={<HeaderFallback isHome={isHome} />}>
-      <EventsListener />
-      <ShopifyProvider countryCode={countryCode}>
-        <Seo
-          type="defaultSeo"
-          data={{
-            title: 'Hydrogen',
-            description:
-              "A custom storefront powered by Hydrogen, Shopify's React-based framework for building headless.",
-            titleTemplate: `%s · Hydrogen`,
-          }}
-        />
-        <CartProvider
-          countryCode={countryCode}
-          customerAccessToken={customerAccessToken}
-        >
-          <Router>
-            <FileRoutes
-              basePath={countryCode ? `/${countryCode}/` : undefined}
-            />
-            <Route path="*" page={<NotFound />} />
-          </Router>
-        </CartProvider>
-        <PerformanceMetrics />
-        {import.meta.env.DEV && <PerformanceMetricsDebug />}
-        <ShopifyAnalytics cookieDomain="hydrogen.shop" />
+    <Suspense>
+      <ShopifyProvider>
+        <LocalizationProvider countryCode={countryCode}>
+          <CartProvider countryCode={countryCode}>
+            <Suspense>
+              <DefaultSeo />
+            </Suspense>
+            <Router>
+              <FileRoutes routes={routes} />
+              <Route path="*" page={<NotFound />} />
+            </Router>
+          </CartProvider>
+          <PerformanceMetrics />
+          {import.meta.env.DEV && <PerformanceMetricsDebug />}
+          <ShopifyAnalytics />
+        </LocalizationProvider>
       </ShopifyProvider>
     </Suspense>
   );

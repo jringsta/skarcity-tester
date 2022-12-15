@@ -21,7 +21,6 @@ Disallow: /orders
 Disallow: /checkouts/
 Disallow: /checkout
 Disallow: /carts
-Disallow: /account
 ${sitemapUrl ? `Sitemap: ${sitemapUrl}` : ''}
 
 # Google adsbot ignores robots.txt unless specifically named!

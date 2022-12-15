@@ -1,5 +1,5 @@
-import {useCallback} from 'react';
-import {useServerProps} from '@shopify/hydrogen';
+import { useCallback } from 'react';
+import { useServerProps } from '@shopify/hydrogen';
 
 // @ts-expect-error types not available
 import typographicBase from 'typographic-base';
@@ -58,8 +58,8 @@ export function isDiscounted(price, compareAtPrice) {
 
 export function getExcerpt(text) {
   const regex = /<p.*>(.*?)<\/p>/;
-  const match = regex.exec(text);
-  return match?.length ? match[0] : text;
+  const correspondingText = regex.exec(text);
+  return correspondingText ? correspondingText[1] : '';
 }
 
 function resolveToFromType(
@@ -75,14 +75,11 @@ function resolveToFromType(
       */
   const defaultPrefixes = {
     BLOG: 'blogs',
-    COLLECTION: 'collections',
-    COLLECTIONS: 'collections',
     FRONTPAGE: 'frontpage',
     HTTP: '',
     PAGE: 'pages',
-    CATALOG: 'collections/all',
+    CATALOG: 'products',
     PRODUCT: 'products',
-    SEARCH: 'search',
     SHOP_POLICY: 'policies',
   };
 
@@ -105,16 +102,10 @@ function resolveToFromType(
         : `/${blogHandle}/${handle}/`;
     }
 
-    case type === 'COLLECTIONS':
-      return `/${routePrefix.COLLECTIONS}`;
-
-    case type === 'SEARCH':
-      return `/${routePrefix.SEARCH}`;
-
     case type === 'CATALOG':
       return `/${routePrefix.CATALOG}`;
 
-    // common cases: BLOG, PAGE, COLLECTION, PRODUCT, SHOP_POLICY, HTTP
+    // common cases: BLOG, PAGE, PRODUCT, SHOP_POLICY, HTTP
     default:
       return routePrefix[type]
         ? `/${routePrefix[type]}/${handle}`
@@ -135,7 +126,7 @@ function parseItem(customPrefixes = {}) {
     }
 
     // extract path from url because we don't need the origin on internal to attributes
-    const {pathname} = new URL(item.url);
+    const { pathname } = new URL(item.url);
 
     /*
               Currently the MenuAPI only returns online store urls e.g — xyz.myshopify.com/..
@@ -145,19 +136,19 @@ function parseItem(customPrefixes = {}) {
 
     const parsedItem = isInternalLink
       ? // internal links
-        {
-          ...item,
-          isExternal: false,
-          target: '_self',
-          to: resolveToFromType({type: item.type, customPrefixes, pathname}),
-        }
+      {
+        ...item,
+        isExternal: false,
+        target: '_self',
+        to: resolveToFromType({ type: item.type, customPrefixes, pathname }),
+      }
       : // external links
-        {
-          ...item,
-          isExternal: true,
-          target: '_blank',
-          to: item.url,
-        };
+      {
+        ...item,
+        isExternal: true,
+        target: '_blank',
+        to: item.url,
+      };
 
     return {
       ...parsedItem,

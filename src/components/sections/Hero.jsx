@@ -1,111 +1,25 @@
-import {Image, Link, Video} from '@shopify/hydrogen';
+import {Link} from '@shopify/hydrogen';
 
-import {Heading, Text} from '~/components';
-
-export function Hero({
-  byline,
-  cta,
-  handle,
-  heading,
-  height,
-  loading,
-  spread,
-  spreadSecondary,
-  top,
-}) {
+export function Hero() {
   return (
-    <Link to={`/collections/${handle}`}>
-      <section
-        className={`relative justify-end flex flex-col w-full ${
-          top && '-mt-nav'
-        } ${
-          height === 'full'
-            ? 'h-screen'
-            : 'aspect-[4/5] sm:aspect-square md:aspect-[5/4] lg:aspect-[3/2] xl:aspect-[2/1]'
-        }`}
-      >
-        <div className="absolute inset-0 grid flex-grow grid-flow-col pointer-events-none auto-cols-fr -z-10 content-stretch overflow-clip">
-          {spread?.reference && (
-            <div className="">
-              <SpreadMedia
-                scale={2}
-                sizes={
-                  spreadSecondary?.reference
-                    ? '(min-width: 80em) 700px, (min-width: 48em) 450px, 500px'
-                    : '(min-width: 80em) 1400px, (min-width: 48em) 900px, 500px'
-                }
-                widths={
-                  spreadSecondary?.reference
-                    ? [500, 450, 700]
-                    : [500, 900, 1400]
-                }
-                width={spreadSecondary?.reference ? 375 : 750}
-                data={spread.reference}
-                loading={loading}
-              />
-            </div>
-          )}
-          {spreadSecondary?.reference && (
-            <div className="hidden md:block">
-              <SpreadMedia
-                sizes="(min-width: 80em) 700, (min-width: 48em) 450, 500"
-                widths={[450, 700]}
-                width={375}
-                data={spreadSecondary.reference}
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col items-baseline justify-between gap-4 px-6 py-8 sm:px-8 md:px-12 bg-gradient-to-t dark:from-contrast/60 dark:text-primary from-primary/60 text-contrast">
-          {heading?.value && (
-            <Heading format as="h2" size="display" className="max-w-md">
-              {heading.value}
-            </Heading>
-          )}
-          {byline?.value && (
-            <Text format width="narrow" as="p" size="lead">
-              {byline.value}
-            </Text>
-          )}
-          {cta?.value && <Text size="lead">{cta.value}</Text>}
-        </div>
-      </section>
+    <Link to="/shop">
+      <div className="hero-container">
+        <svg
+          width="450"
+          height="451"
+          viewBox="0 0 450 451"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="hero-logo"
+        >
+          <path
+            d="M450 225.006C450.046 255.978 443.672 286.623 431.281 315.009C396.555 394.473 317.259 450.012 224.994 450.012C192.277 450.044 159.95 442.926 130.272 429.157C100.595 415.387 74.2845 395.299 53.1828 370.298C34.701 348.466 50.1077 315.009 78.7397 315.009H320.215C329.497 315.009 337.347 307.683 337.497 298.402C337.532 296.186 337.131 293.984 336.316 291.923C335.5 289.862 334.287 287.982 332.745 286.39C331.203 284.798 329.362 283.525 327.328 282.645C325.294 281.764 323.106 281.293 320.89 281.258H56.0641C25.257 281.258 0.0813612 256.401 0.000109058 225.587V225.006C-0.0185724 206.032 2.36289 187.131 7.0878 168.755C10.063 157.21 13.9632 145.923 18.7506 135.004C53.4453 55.5329 132.741 0.000106414 225.006 0.000106414C257.72 -0.0317417 290.046 7.08552 319.721 20.8538C349.396 34.6222 375.704 54.7089 396.805 79.7085C415.293 101.547 399.88 135.004 371.248 135.004H129.772C120.485 135.004 112.628 142.341 112.491 151.629C112.426 156.104 114.14 160.421 117.258 163.632C120.376 166.842 124.641 168.683 129.116 168.748H393.936C424.743 168.748 449.919 193.605 450 224.419V225.006Z"
+            fill="#FF9FE2"
+          />
+        </svg>
+
+        <Link to="/shop" className="hero-text">CLICK TO ENTER</Link>
+      </div>
     </Link>
   );
-}
-
-function SpreadMedia({data, loading, scale, sizes, width, widths}) {
-  if (data.mediaContentType === 'VIDEO') {
-    return (
-      <Video
-        previewImageOptions={{scale, src: data.previewImage.url}}
-        width={scale * width}
-        className="block object-cover w-full h-full"
-        data={data}
-        controls={false}
-        muted
-        loop
-        playsInline
-        autoPlay
-      />
-    );
-  }
-
-  if (data.mediaContentType === 'IMAGE') {
-    return (
-      <Image
-        widths={widths}
-        sizes={sizes}
-        alt={data.alt || 'Marketing Banner Image'}
-        className="block object-cover w-full h-full"
-        // @ts-ignore
-        data={data.image}
-        loading={loading}
-        width={width}
-        loaderOptions={{scale, crop: 'center'}}
-      />
-    );
-  }
-
-  return null;
 }

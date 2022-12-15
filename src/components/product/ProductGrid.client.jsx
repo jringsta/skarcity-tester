@@ -1,7 +1,12 @@
 import {useState, useRef, useEffect, useCallback} from 'react';
-import {Link, flattenConnection} from '@shopify/hydrogen';
+import {flattenConnection} from '@shopify/hydrogen';
 
-import {Button, Grid, ProductCard} from '~/components';
+import {
+  Button,
+  ProductCard,
+  ProductGridEmptyPredrop,
+  ProductGridEmptyPostdrop,
+} from '~/components';
 import {getImageLoadingPriority} from '~/lib/const';
 
 export function ProductGrid({url, collection}) {
@@ -64,27 +69,29 @@ export function ProductGrid({url, collection}) {
   }, [nextButtonRef, cursor, handleIntersect]);
 
   if (!haveProducts) {
-    return (
-      <>
-        <p>No products found on this collection</p>
-        <Link to="/products">
-          <p className="underline">Browse catalog</p>
-        </Link>
-      </>
-    );
+    if (
+      import.meta.env.PUBLIC_STATUS &&
+      import.meta.env.PUBLIC_STATUS === 'predrop'
+    ) {
+      return <ProductGridEmptyPredrop />;
+    } else {
+      return <ProductGridEmptyPostdrop />;
+    }
   }
 
   return (
     <>
-      <Grid layout="products">
-        {products.map((product, i) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            loading={getImageLoadingPriority(i)}
-          />
-        ))}
-      </Grid>
+      <div className="product-grid-container-outer">
+        <div className="product-grid-container-inner">
+          {products.map((product, i) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              loading={getImageLoadingPriority(i)}
+            />
+          ))}
+        </div>
+      </div>
 
       {nextPage && (
         <div

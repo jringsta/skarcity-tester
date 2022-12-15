@@ -172,19 +172,7 @@ const PLACEHOLDERS = {
   },
 };
 
-/**
- * getHeroPlaceholder() returns placeholder content when the expected metafields
- * don't exist. Define the following five custom metafields on your Shopify store to override placeholders:
- * - hero.title             Single line text
- * - hero.byline            Single line text
- * - hero.cta               Single line text
- * - hero.spread            File
- * - hero.spread_secondary   File
- *
- * @see https://help.shopify.com/manual/metafields/metafield-definitions/creating-custom-metafield-definitions
- * @see https://github.com/Shopify/hydrogen/discussions/1790
- */
-
+// Return placeholders for collection Heros when metafields are not set
 export function getHeroPlaceholder(heros) {
   if (!heros?.length) return [];
 

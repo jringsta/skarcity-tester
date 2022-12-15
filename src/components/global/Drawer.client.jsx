@@ -2,8 +2,6 @@ import {Fragment, useState} from 'react';
 // @ts-expect-error @headlessui/react incompatibility with node16 resolution
 import {Dialog, Transition} from '@headlessui/react';
 
-import {Heading, IconClose} from '~/components';
-
 /**
  * Drawer component that opens on user click.
  * @param heading - string. Shown at the top of the drawer.
@@ -49,25 +47,38 @@ function Drawer({heading, open, onClose, openFrom = 'right', children}) {
                 leaveFrom="translate-x-0"
                 leaveTo={offScreen[openFrom]}
               >
-                <Dialog.Panel className="w-screen max-w-lg text-left align-middle transition-all transform shadow-xl h-screen-dynamic bg-contrast">
+                <Dialog.Panel className="w-screen h-screen max-w-lg text-left align-middle transition-all transform shadow-xl bg-contrast">
                   <header
-                    className={`sticky top-0 flex items-center px-6 h-nav sm:px-8 md:px-12 ${
+                    className={`sticky top-0 flex items-center px-6 h-nav sm:px-8 md:px-12 cart-main-container-top ${
                       heading ? 'justify-between' : 'justify-end'
                     }`}
                   >
                     {heading !== null && (
                       <Dialog.Title>
-                        <Heading as="span" size="lead" id="cart-contents">
+                        <div
+                          className="drawer-title text-color"
+                          id="cart-contents"
+                        >
                           {heading}
-                        </Heading>
+                        </div>
                       </Dialog.Title>
                     )}
                     <button
                       type="button"
-                      className="p-4 -m-4 transition text-primary hover:text-primary/50"
+                      className="header-button-icon"
                       onClick={onClose}
                     >
-                      <IconClose aria-label="Close panel" />
+                      <svg
+                        width="400"
+                        height="400"
+                        viewBox="0 0 400 400"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="header-svg"
+                      >
+                        <path d="M309.091 30.3034L30.303 309.091C13.5671 325.827 13.5671 352.961 30.303 369.697C47.0389 386.433 74.1732 386.433 90.9091 369.697L369.697 90.9094C386.433 74.1735 386.433 47.0393 369.697 30.3034C352.961 13.5675 325.827 13.5675 309.091 30.3034Z" />
+                        <path d="M90.9091 30.3032C74.1732 13.5673 47.0389 13.5673 30.303 30.3032C13.5671 47.0391 13.5671 74.1733 30.303 90.9092L309.091 369.697C325.827 386.433 352.961 386.433 369.697 369.697C386.433 352.961 386.433 325.827 369.697 309.091L90.9091 30.3032Z" />
+                      </svg>
                     </button>
                   </header>
                   {children}

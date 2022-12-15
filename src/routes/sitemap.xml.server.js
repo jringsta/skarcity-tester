@@ -32,7 +32,7 @@ function shopSitemap(data, baseUrl) {
         changeFreq: 'daily',
       };
 
-      if (product.featuredImage?.url) {
+      if (product.featuredImage.url) {
         finalObject.image = {
           url: product.featuredImage.url,
         };
@@ -44,21 +44,9 @@ function shopSitemap(data, baseUrl) {
         if (product.featuredImage.altText) {
           finalObject.image.caption = product.featuredImage.altText;
         }
+
+        return finalObject;
       }
-
-      return finalObject;
-    });
-
-  const collectionsData = flattenConnection(data.collections)
-    .filter((collection) => collection.onlineStoreUrl)
-    .map((collection) => {
-      const url = `${baseUrl}/collections/${collection.handle}`;
-
-      return {
-        url,
-        lastMod: collection.updatedAt,
-        changeFreq: 'daily',
-      };
     });
 
   const pagesData = flattenConnection(data.pages)
@@ -73,7 +61,7 @@ function shopSitemap(data, baseUrl) {
       };
     });
 
-  const urlsDatas = [...productsData, ...collectionsData, ...pagesData];
+  const urlsDatas = [...productsData, ...pagesData];
 
   return `
     <urlset
@@ -122,18 +110,6 @@ const QUERY = gql`
             url
             altText
           }
-        }
-      }
-    }
-    collections(
-      first: $urlLimits
-      query: "published_status:'online_store:visible'"
-    ) {
-      edges {
-        node {
-          updatedAt
-          handle
-          onlineStoreUrl
         }
       }
     }

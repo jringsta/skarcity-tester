@@ -1,4 +1,3 @@
-export * from './account/index';
 export * from './cards/index';
 export * from './cart/index';
 export * from './elements/index';
@@ -8,4 +7,3 @@ export * from './sections/index';
 export {CountrySelector} from './CountrySelector.client';
 export {CustomFont} from './CustomFont.client';
 export {HeaderFallback} from './HeaderFallback';
-export {EventsListener} from './EventsListener.client';

@@ -3,24 +3,30 @@ import {useShopQuery, gql, useLocalization, Seo} from '@shopify/hydrogen';
 
 import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import {PAGINATION_SIZE} from '~/lib/const';
-import {ProductGrid, PageHeader, Section} from '~/components';
+import {ProductGrid} from '~/components';
 import {Layout} from '~/components/index.server';
 
 export default function AllProducts() {
   return (
     <Layout>
-      <Seo type="page" data={{title: 'All Products'}} />
-      <PageHeader heading="All Products" variant="allCollections" />
-      <Section>
+      <Suspense>
+        <Seo
+          type="page"
+          data={{
+            title: 'Shop',
+          }}
+        />
+      </Suspense>
+      <div>
         <Suspense>
-          <AllProductsGrid />
+          <Shop />
         </Suspense>
-      </Section>
+      </div>
     </Layout>
   );
 }
 
-function AllProductsGrid() {
+function Shop() {
   const {
     language: {isoCode: languageCode},
     country: {isoCode: countryCode},
@@ -41,13 +47,13 @@ function AllProductsGrid() {
   return (
     <ProductGrid
       key="products"
-      url={`/products?country=${countryCode}`}
+      url={`/shop?country=${countryCode}`}
       collection={{products}}
     />
   );
 }
 
-// API to paginate products
+// API to paginate products!
 // @see templates/demo-store/src/components/product/ProductGrid.client.tsx
 export async function api(request, {params, queryShop}) {
   if (request.method !== 'POST') {
@@ -84,6 +90,7 @@ const ALL_PRODUCTS_QUERY = gql`
     products(first: $pageBy, after: $cursor) {
       nodes {
         ...ProductCard
+        availableForSale
       }
       pageInfo {
         hasNextPage
@@ -105,6 +112,7 @@ const PAGINATE_ALL_PRODUCTS_QUERY = gql`
     products(first: $pageBy, after: $cursor) {
       nodes {
         ...ProductCard
+        availableForSale
       }
       pageInfo {
         hasNextPage
