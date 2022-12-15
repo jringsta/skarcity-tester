@@ -23,8 +23,8 @@ function MuseumBody() {
     <div className="museum-container-outer">
       <div className="museum-container-inner">
         <div className="museum-container museum-container-1">
-          <Link to="/museum/F22" className="museum-text">
-            <div className="museum-bubble museum-bubble-1">F22</div>
+          <Link to="/museum/FW22" className="museum-text">
+            <div className="museum-bubble museum-bubble-1">FW22</div>
           </Link>
           <div className="museum-line-1" />
         </div>

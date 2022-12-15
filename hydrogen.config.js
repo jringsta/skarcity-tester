@@ -5,7 +5,7 @@ export default defineConfig({
     defaultCountryCode: 'US',
     defaultLanguageCode: 'EN',
     storeDomain: 'checkout.skarcity.art',
-    storefrontToken: import.meta.env.PUBLIC_STOREFRONT_ACCESS_TOKEN,
+    storefrontToken: `46ab3591fa2dc15f96d6a9187c67d6fe`,
     storefrontApiVersion: '2022-07',
   },
   session: CookieSessionStorage('__session', {
